@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { dirname, join, isAbsolute, basename, resolve, sep } from 'path'
+import { dirname, join, isAbsolute, basename, sep } from 'path'
 import { pathToFileURL } from 'url'
 
 export default (options = {}) => {
