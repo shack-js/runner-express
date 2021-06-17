@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander'
-import getApp from './index.cjs'
+import getApp from './index.mjs'
 
 let { program } = commander
 
