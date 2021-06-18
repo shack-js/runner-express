@@ -6,10 +6,11 @@ let { program } = commander
 
 program
   .name('runner-express')
-  .option('-a, --apis', 'expose scripts in folder', 'api')
-  .option('-u, --url', 'as apis under', '/api')
-  .option('-p, --port', 'on port', parseInt, 3000)
-  .option('-s, --static', 'assets folder to serve static', 'dist')
+  .option('-a, --apis <folder>', 'expose scripts in folder', 'api')
+  .option('-u, --url <base>', 'as apis under', '/api')
+  .option('-p, --port <port>', 'on port', parseInt, 3000)
+  .option('-s, --static <folder>', 'assets folder to serve static', 'dist')
+  .option('-e, --extension <extension>', 'api file extension', '.mjs')
   .action(async (options = {}) => {
     let app = getApp(options)
     let { port = 3000 } = options

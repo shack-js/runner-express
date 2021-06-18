@@ -7,7 +7,8 @@ export default (options = {}) => {
   let {
     apis = 'apis',
     url = '/apis',
-    jsonLimit = '50M'
+    jsonLimit = '50M',
+    extension = '.mjs'
   } = options
   let staticPath = options.static || 'dist'
   let rootFolder = process.cwd()
@@ -21,9 +22,10 @@ export default (options = {}) => {
     let mPath = join(apiFolder, path.replace(/\//g, sep))
     // console.log({ mPath, apiFolder, path })
     try {
-      let m = await import(pathToFileURL(dirname(mPath) + '.mjs'))
+      let m = await import(pathToFileURL(dirname(mPath) + extension))
       // console.log(m)
-      return res.json({ data: await m[basename(path)](...body) })
+      let method = basename(path)
+      return res.json({ data: await (m[method] || m.default[method])(...body) })
     } catch (error) {
       console.log(error)
       res.json({ error })
