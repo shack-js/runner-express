@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { dirname, join, isAbsolute, basename, sep } from 'path'
-import { pathToFileURL } from 'url'
+import { join, isAbsolute, } from 'path'
+import getMethodMjs from './get-method.mjs'
 
 export default (options = {}) => {
   let {
@@ -19,13 +19,9 @@ export default (options = {}) => {
   app.use(bodyParser.json({ limit: jsonLimit }))
   app.use(url, async (req, res) => {
     let { path, body } = req
-    let mPath = join(apiFolder, path.replace(/\//g, sep))
-    // console.log({ mPath, apiFolder, path })
     try {
-      let m = await import(pathToFileURL(dirname(mPath) + extension))
-      // console.log(m)
-      let method = basename(path)
-      return res.json({ data: await (m[method] || m.default[method])(...body) })
+      let method = await getMethodMjs(apiFolder, path, extension)
+      return res.json({ data: await method(...body) })
     } catch (error) {
       console.log(error)
       res.json({ error })
