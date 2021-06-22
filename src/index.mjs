@@ -28,7 +28,7 @@ export default (options = {}) => {
         ctx = (t === undefined) ? ctx : t
       }
       // call apis/.../file/method
-      console.log(ctx, method.toString())
+      // console.log(ctx, method.toString())
       return res.json({ data: await method.apply(ctx, body) })
     } catch (error) {
       console.log(error)
