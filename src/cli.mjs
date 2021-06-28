@@ -6,8 +6,8 @@ let { program } = commander
 
 program
   .name('runner-express')
-  .option('-a, --apis <folder>', 'expose scripts in folder', 'api')
-  .option('-u, --url <base>', 'as apis under', '/api')
+  .option('-a, --apis <folder>', 'expose scripts in folder', 'apis')
+  .option('-u, --url <base>', 'as apis under', '/apis')
   .option('-p, --port <port>', 'on port', parseInt, 3000)
   .option('-s, --static <folder>', 'assets folder to serve static', 'dist')
   .option('-e, --extension <extension>', 'api file extension', '.mjs')
