@@ -9,7 +9,7 @@ export default async (options = {}, beforeInit = async () => { }) => {
   let {
     apis = 'apis',
     url = '/apis',
-    jsonLimit = '50M',
+    jsonLimit = '50mb',
     extension = '.mjs',
     dev = false
   } = options
