@@ -1,1 +1,5 @@
 /node_modules
+/esm/*
+/commonjs/*
+!/esm/package.json
+!/commonjs/package.json

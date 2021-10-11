@@ -1,11 +1,22 @@
-import express from 'express'
+import express, { Express } from 'express'
 import bodyParser from 'body-parser'
 import { join, isAbsolute, } from 'path'
-import getMethodMjs, { getModule } from './get-method.mjs'
+import getMethodMjs, { getModule } from './get-method'
 
 const INIT_FILE = '_init'
 
-export default async (options = {}, beforeInit = async () => { }) => {
+interface Options {
+  apis?: string
+  url?: string
+  jsonLimit?: string
+  extension?: string
+  static?: string
+  dev?: boolean
+}
+
+type BeforeInitCallBack = (app?: Express, options?: Options) => void | any
+
+export default async (options: Options = {}, beforeInit:BeforeInitCallBack = async () => { }) => {
   let {
     apis = 'apis',
     url = '/apis',

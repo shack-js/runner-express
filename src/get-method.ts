@@ -31,9 +31,10 @@ export default async (
   ]
 }
 
-export async function getModule(filePath, force = false) {
+export async function getModule(filePath: string, force = false) {
   if (cache[filePath] === undefined || force) {
     cache[filePath] = (await fs.pathExists(filePath))
+      //@ts-ignore
       ? cache[filePath] = await import(pathToFileURL(filePath))
       : null
   }
@@ -41,7 +42,7 @@ export async function getModule(filePath, force = false) {
 }
 
 async function getAuthMethods(
-  modluePath = '', extension = '', baseFolder = 0, dev = false
+  modluePath = '', extension = '', baseFolder: string = '', dev = false
 ) {
   let folder = dirname(modluePath), tarr = [], t = folder
   while (true) {
