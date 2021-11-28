@@ -9,3 +9,7 @@ in case you want to use outside shack.js, you can use this as a cli
 ```
 npx @shack-js/runner-express [-a apifolder] [-u urlbase] [-p port] [-s staticfolder] [-e extension]
 ```
+
+## code usage
+
+[./examples](./examples)

@@ -2,7 +2,7 @@ import { dirname, join, basename, sep, relative } from 'path'
 import fs from 'fs-extra'
 import { pathToFileURL } from 'url'
 
-const cache = {}, AUTH_FILE = '_auth', authCache = {}
+const cache = {}, AUTH_FILE = '_auth', AUTH_METHOD = '_auth', authCache = {}
 
 export default async (
   apiFolder = '', urlPath = '', extension = '', dev = false
@@ -16,17 +16,19 @@ export default async (
 
   // auth from 'apis/_auth.mjs' to 'apis/a/b/c/.../_auth.mjs'
   const tmpModule = await getModule(tmp + extension, dev)
-  // console.log(tmpModule, { tmp, extension })
-  if (!tmpModule) throw 'illegal urlPath'
+
+  if (!tmpModule) {
+    console.log(tmpModule, { tmp, extension })
+    throw 'illegal urlPath'
+  }
   let authMethods = await getAuthMethods(tmp, extension, apiFolder, dev)
   // if module exports '_auth' method, auth it
-  const authMethod = tmpModule[AUTH_FILE]
-    || (tmpModule.default && tmpModule.default[AUTH_FILE])
+  const authMethod = getModuleMethod(tmpModule, AUTH_METHOD)
   if (authMethod) authMethods = authMethods.concat([authMethod])
 
   // return method
   return [
-    tmpModule[methodName] || tmpModule.default[methodName],
+    getModuleMethod(tmpModule, methodName),
     authMethods
   ]
 }
@@ -34,11 +36,19 @@ export default async (
 export async function getModule(filePath: string, force = false) {
   if (cache[filePath] === undefined || force) {
     cache[filePath] = (await fs.pathExists(filePath))
-      //@ts-ignore
-      ? cache[filePath] = await import(pathToFileURL(filePath))
+      ? cache[filePath] = typeof require == 'undefined'
+        //@ts-ignore
+        ? await import(pathToFileURL(filePath))
+        : require(filePath)
       : null
   }
   return cache[filePath]
+}
+
+export function getModuleMethod(module: any, method: string) {
+  if (typeof module[method] == 'function') return module[method]
+  if (!module.default) return undefined
+  return module.default[method]
 }
 
 async function getAuthMethods(
