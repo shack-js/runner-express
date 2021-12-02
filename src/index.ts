@@ -27,7 +27,7 @@ interface HookOptions extends FullOptions {
 }
 
 type HookCallBack = (app?: Express, options?: Options) => void | any
-type HookMethod = 'beforeParser' | 'beforeApi' | 'beforeStatic' | 'afterInit'
+type HookMethod = 'beforeParser' | 'beforeApi' | 'beforeStatic' | 'afterInit' | 'default'
 
 export async function getApp(options: Options = {}) {
   let {
@@ -100,6 +100,7 @@ export async function getApp(options: Options = {}) {
   })
   await beforeStatic(app, opts)
   await tryInit('beforeStatic')
+  await tryInit('default')
   app.use('/', express.static(assetsFolder))
   await afterInit(app, opts)
   await tryInit('afterInit')
