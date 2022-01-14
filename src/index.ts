@@ -29,7 +29,7 @@ interface HookOptions extends FullOptions {
 type HookCallBack = (app?: Express, options?: Options) => void | any
 type HookMethod = 'beforeParser' | 'beforeApi' | 'beforeStatic' | 'afterInit' | 'default'
 
-export async function getApp(options: Options = {}) {
+export async function getApp(options: Options = {}, app1?: Express) {
   let {
     apis = 'apis',
     url = '/apis',
@@ -64,7 +64,7 @@ export async function getApp(options: Options = {}) {
 
   let initModule = await getModule(join(apiFolder, INIT_FILE) + extension)
 
-  let app = express()
+  let app = app1 || express()
   await beforeParser(app, opts)
   await tryInit('beforeParser')
   app.use(bodyParser.json({ limit: jsonLimit }))
@@ -73,7 +73,9 @@ export async function getApp(options: Options = {}) {
   app.use(url, async (req, res) => {
     let { path, body } = req
     try {
-      if (req.method == 'GET') {
+      let httpMethod = getMethod(path)
+      if (httpMethod != req.method) throw `${path} shall go ${httpMethod}`
+      if (httpMethod == 'GET') {
         const { q } = req.query
         body = q == undefined
           ? []
@@ -100,10 +102,10 @@ export async function getApp(options: Options = {}) {
   })
   await beforeStatic(app, opts)
   await tryInit('beforeStatic')
-  await tryInit('default')
   app.use('/', express.static(assetsFolder))
   await afterInit(app, opts)
   await tryInit('afterInit')
+  await tryInit('default')
   return app
 
   async function tryInit(method: HookMethod) {
@@ -111,6 +113,15 @@ export async function getApp(options: Options = {}) {
     let fn = getModuleMethod(initModule, method)
     fn && await fn(app, opts)
   }
+
+  function getMethod(url: string) {
+    let basename = url.substring(url.lastIndexOf('/') + 1).toUpperCase()
+    for (let method of ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']) {
+      if (basename.startsWith(method)) return method
+    }
+    return 'POST'
+  }
+
 }
 
 export default getApp

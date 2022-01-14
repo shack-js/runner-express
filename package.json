@@ -1,6 +1,6 @@
 {
   "name": "@shack-js/runner-express",
-  "version": "1.1.1",
+  "version": "1.1.8",
   "description": "express runner for shack.js",
   "bin": "esm/cli.js",
   "main": "./commonjs/index.js",
