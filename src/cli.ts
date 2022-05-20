@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import commander from 'commander'
+import { Command } from 'commander'
 import getApp from './index'
 
-let { program } = commander
+let program = new Command
 
 program
   .name('runner-express')
